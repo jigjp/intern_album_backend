@@ -6,9 +6,9 @@ defmodule InternAlbum.AccountsTest do
   describe "users" do
     alias InternAlbum.Accounts.User
 
-    @valid_attrs %{icon_url: "some icon_url", login_id: "some login_id", name: "some name"}
-    @update_attrs %{icon_url: "some updated icon_url", login_id: "some updated login_id", name: "some updated name"}
-    @invalid_attrs %{icon_url: nil, login_id: nil, name: nil}
+    @valid_attrs %{icon_url: "some icon_url", name: "some name"}
+    @update_attrs %{icon_url: "some updated icon_url", name: "some updated name"}
+    @invalid_attrs %{icon_url: nil, name: nil}
 
     def user_fixture(attrs \\ %{}) do
       {:ok, user} =
@@ -32,7 +32,6 @@ defmodule InternAlbum.AccountsTest do
     test "create_user/1 with valid data creates a user" do
       assert {:ok, %User{} = user} = Accounts.create_user(@valid_attrs)
       assert user.icon_url == "some icon_url"
-      assert user.login_id == "some login_id"
       assert user.name == "some name"
     end
 
@@ -44,7 +43,6 @@ defmodule InternAlbum.AccountsTest do
       user = user_fixture()
       assert {:ok, %User{} = user} = Accounts.update_user(user, @update_attrs)
       assert user.icon_url == "some updated icon_url"
-      assert user.login_id == "some updated login_id"
       assert user.name == "some updated name"
     end
 
@@ -63,6 +61,65 @@ defmodule InternAlbum.AccountsTest do
     test "change_user/1 returns a user changeset" do
       user = user_fixture()
       assert %Ecto.Changeset{} = Accounts.change_user(user)
+    end
+  end
+
+  describe "credentials" do
+    alias InternAlbum.Accounts.Credential
+
+    @valid_attrs %{login_id: "some login_id"}
+    @update_attrs %{login_id: "some updated login_id"}
+    @invalid_attrs %{login_id: nil}
+
+    def credential_fixture(attrs \\ %{}) do
+      {:ok, credential} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Accounts.create_credential()
+
+      credential
+    end
+
+    test "list_credentials/0 returns all credentials" do
+      credential = credential_fixture()
+      assert Accounts.list_credentials() == [credential]
+    end
+
+    test "get_credential!/1 returns the credential with given id" do
+      credential = credential_fixture()
+      assert Accounts.get_credential!(credential.id) == credential
+    end
+
+    test "create_credential/1 with valid data creates a credential" do
+      assert {:ok, %Credential{} = credential} = Accounts.create_credential(@valid_attrs)
+      assert credential.login_id == "some login_id"
+    end
+
+    test "create_credential/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_credential(@invalid_attrs)
+    end
+
+    test "update_credential/2 with valid data updates the credential" do
+      credential = credential_fixture()
+      assert {:ok, %Credential{} = credential} = Accounts.update_credential(credential, @update_attrs)
+      assert credential.login_id == "some updated login_id"
+    end
+
+    test "update_credential/2 with invalid data returns error changeset" do
+      credential = credential_fixture()
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_credential(credential, @invalid_attrs)
+      assert credential == Accounts.get_credential!(credential.id)
+    end
+
+    test "delete_credential/1 deletes the credential" do
+      credential = credential_fixture()
+      assert {:ok, %Credential{}} = Accounts.delete_credential(credential)
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_credential!(credential.id) end
+    end
+
+    test "change_credential/1 returns a credential changeset" do
+      credential = credential_fixture()
+      assert %Ecto.Changeset{} = Accounts.change_credential(credential)
     end
   end
 end

@@ -6,15 +6,13 @@ defmodule InternAlbumWeb.UserControllerTest do
 
   @create_attrs %{
     icon_url: "some icon_url",
-    login_id: "some login_id",
     name: "some name"
   }
   @update_attrs %{
     icon_url: "some updated icon_url",
-    login_id: "some updated login_id",
     name: "some updated name"
   }
-  @invalid_attrs %{icon_url: nil, login_id: nil, name: nil}
+  @invalid_attrs %{icon_url: nil, name: nil}
 
   def fixture(:user) do
     {:ok, user} = Accounts.create_user(@create_attrs)
@@ -42,7 +40,6 @@ defmodule InternAlbumWeb.UserControllerTest do
       assert %{
                "id" => id,
                "icon_url" => "some icon_url",
-               "login_id" => "some login_id",
                "name" => "some name"
              } = json_response(conn, 200)["data"]
     end
@@ -65,7 +62,6 @@ defmodule InternAlbumWeb.UserControllerTest do
       assert %{
                "id" => id,
                "icon_url" => "some updated icon_url",
-               "login_id" => "some updated login_id",
                "name" => "some updated name"
              } = json_response(conn, 200)["data"]
     end
