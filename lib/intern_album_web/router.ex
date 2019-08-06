@@ -7,5 +7,7 @@ defmodule InternAlbumWeb.Router do
 
   scope "/api", InternAlbumWeb do
     pipe_through :api
+
+    resources "/users", UserController, except: [:new, :edit]
   end
 end
