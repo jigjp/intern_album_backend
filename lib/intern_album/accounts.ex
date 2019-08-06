@@ -203,4 +203,17 @@ defmodule InternAlbum.Accounts do
   def change_credential(%Credential{} = credential) do
     Credential.changeset(credential, %{})
   end
+
+  def authenticate_by_login_id_password(login_id, _password) do
+    query =
+      from u in User,
+      inner_join: c in assoc(u, :credential),
+      where: c.login_id == ^login_id
+
+    case Repo.one(query) do
+      %User{} = user -> {:ok, user}
+      nil -> {:error, :unauthorized}
+    end
+
+  end
 end
