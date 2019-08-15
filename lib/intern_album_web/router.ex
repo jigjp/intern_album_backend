@@ -15,6 +15,7 @@ defmodule InternAlbumWeb.Router do
   end
 
   pipeline :api do
+    plug CORSPlug, origin: ["http://localhost:8080"]
     plug :accepts, ["json"]
     plug :fetch_session
   end
@@ -22,12 +23,14 @@ defmodule InternAlbumWeb.Router do
   scope "/api", InternAlbumWeb do
     pipe_through :api
 
+    options "/sessions", SessionController, :options
     resources "/sessions", SessionController, only: [:new, :create], singleton: true
   end
 
   scope "/api", InternAlbumWeb do
     pipe_through [:api, :authenticate_user]
 
+    options "/users", UserController, :options
     resources "/users", UserController, except: [:new, :edit]
   end
 end
