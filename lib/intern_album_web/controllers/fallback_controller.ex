@@ -19,4 +19,11 @@ defmodule InternAlbumWeb.FallbackController do
     |> put_view(InternAlbumWeb.ErrorView)
     |> render(:"404")
   end
+
+  def call(conn, {:error, _}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> put_view(InternAlbumWeb.ErrorView)
+    |> render(:"503")
+  end
 end
