@@ -33,7 +33,8 @@ defmodule InternAlbumWeb.Router do
     options "/users", UserController, :options
     resources "/users", UserController, except: [:new, :edit]
 
+    get "/pictures/:folder", PictureController, :index
+    post "/pictures", PictureController, :create
     options "/pictures", PictureController, :options
-    resources "/pictures", PictureController, except: [:new, :edit]
   end
 end

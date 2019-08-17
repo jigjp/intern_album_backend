@@ -6,18 +6,17 @@ defmodule InternAlbumWeb.PictureController do
 
   action_fallback InternAlbumWeb.FallbackController
 
-  def index(conn, _params) do
-    pictures = Albums.list_pictures()
+  def index(conn, %{"folder" => folder}) do
+    pictures = Albums.list_pictures(folder)
     render(conn, "index.json", pictures: pictures)
   end
 
   def create(conn, %{"picture" => picture_params}) do
-    with {:ok, %Picture{} = picture} <- Albums.create_picture(picture_params) do
+    with {:ok, %Picture{} = _} <- Albums.create_picture(picture_params) do
 
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.picture_path(conn, :show, picture))
-      |> render("show.json", picture: picture)
+      |> render("success.json", %{})
     end
   end
 

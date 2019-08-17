@@ -15,4 +15,10 @@ defmodule InternAlbumWeb.PictureView do
       folder: picture.folder,
       url: picture.url}
   end
+
+  def render("success.json", _) do
+    %{
+      data: "ok"
+    }
+  end
 end

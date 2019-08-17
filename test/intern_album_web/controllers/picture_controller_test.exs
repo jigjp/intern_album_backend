@@ -34,8 +34,8 @@ defmodule InternAlbumWeb.PictureControllerTest do
   end
 
   describe "index" do
-    test "lists all pictures", %{conn: conn} do
-      conn = get(conn, Routes.picture_path(conn, :index))
+    test "lists folder pictures", %{conn: conn} do
+      conn = get(conn, Routes.picture_path(conn, :index, "hogehoge"))
       assert json_response(conn, 200)["data"] == []
     end
   end
@@ -43,17 +43,17 @@ defmodule InternAlbumWeb.PictureControllerTest do
   describe "create picture" do
     test "renders picture when data is valid", %{conn: conn} do
       conn = post(conn, Routes.picture_path(conn, :create), picture: @create_attrs)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+      assert "ok" = json_response(conn, 201)["data"]
 
-      conn = get(conn, Routes.picture_path(conn, :show, id))
+      conn = get(conn, Routes.picture_path(conn, :index, "some folder"))
 
       res = json_response(conn, 200)["data"]
 
-      assert %{
+      assert [%{
                "id" => id,
                "folder" => "some folder",
                "url" => "/media/" <> filename
-             } = res
+             }] = res
 
       assert :ok = File.rm("media/#{filename}")
     end

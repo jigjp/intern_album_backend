@@ -17,8 +17,11 @@ defmodule InternAlbum.Albums do
       [%Picture{}, ...]
 
   """
-  def list_pictures do
-    Repo.all(Picture)
+  def list_pictures(folder) do
+    query =
+      from p in Picture,
+      where: p.folder == ^folder
+    Repo.all(query)
   end
 
   @doc """
