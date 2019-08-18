@@ -11,8 +11,10 @@ defmodule InternAlbumWeb.PictureController do
     render(conn, "index.json", pictures: pictures)
   end
 
-  def create(conn, %{"picture" => picture_params}) do
-    with {:ok, %Picture{} = _} <- Albums.create_picture(picture_params) do
+  def create(conn, picture_params) do
+    IO.inspect picture_params
+    with res <- Albums.create_pictures(picture_params) do
+      IO.inspect res
 
       conn
       |> put_status(:created)

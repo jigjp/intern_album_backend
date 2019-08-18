@@ -25,6 +25,18 @@ defmodule InternAlbum.Albums do
   end
 
   @doc """
+  Gets a all folders
+  """
+  def list_folders() do
+    query =
+      from p in Picture,
+      distinct: true,
+      select: p.folder
+
+    Repo.all(query)
+  end
+
+  @doc """
   Gets a single picture.
 
   Raises `Ecto.NoResultsError` if the Picture does not exist.
@@ -57,13 +69,23 @@ defmodule InternAlbum.Albums do
       filename <- "#{UUID.uuid4()}#{Path.extname(upload.filename)}",
       :ok <- File.cp(upload.path, "media/#{filename}") do
 
-      attrs = Map.put(attrs, "url", "/media/#{filename}")
+      new_attrs = Map.put(attrs, "url", "/media/#{filename}")
 
       %Picture{}
-      |> Picture.changeset(attrs)
+      |> Picture.changeset(new_attrs)
       |> Repo.insert()
     end
 
+  end
+
+  def create_pictures(attrs) do
+    {:ok, folder} = attrs |> map_fetch_atom_or_string(:folder)
+    attrs
+    |> Map.drop(["folder", :folder])
+    |> Map.to_list
+    |> Enum.map(fn {_, image} ->
+      create_picture(%{"folder" => folder, "image" => image})
+    end)
   end
 
   defp map_fetch_atom_or_string(map, key) do

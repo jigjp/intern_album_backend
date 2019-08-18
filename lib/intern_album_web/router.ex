@@ -2,15 +2,16 @@ defmodule InternAlbumWeb.Router do
   use InternAlbumWeb, :router
 
   defp authenticate_user(conn, _) do
-    case get_session(conn, :user_id) do
+    with user_id <- get_session(conn, :user_id),
+         user <- InternAlbum.Accounts.get_user(user_id) do
+      assign(conn, :current_user, user)
+    else
       nil ->
         conn
         |> put_status(:unauthorized)
         |> put_view(InternAlbumWeb.ErrorView)
         |> render("401.json", message: "Unauthorized user")
         |> halt()
-      user_id ->
-        assign(conn, :current_user, InternAlbum.Accounts.get_user!(user_id))
     end
   end
 
@@ -33,8 +34,11 @@ defmodule InternAlbumWeb.Router do
     options "/users", UserController, :options
     resources "/users", UserController, except: [:new, :edit]
 
-    get "/pictures/:folder", PictureController, :index
+    get "/pictures", PictureController, :index
     post "/pictures", PictureController, :create
     options "/pictures", PictureController, :options
+
+    options "/folders", FolderController, :options
+    resources "/folders", FolderController, only: [:index]
   end
 end
