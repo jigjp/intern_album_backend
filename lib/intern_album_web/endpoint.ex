@@ -13,7 +13,7 @@ defmodule InternAlbumWeb.Endpoint do
     at: "/",
     from: :intern_album,
     gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only: ~w(css fonts images statics index.html js favicon.ico robots.txt)
 
   plug Plug.Static, at: "/media", from: "media/"
 
