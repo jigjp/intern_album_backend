@@ -40,6 +40,12 @@ defmodule InternAlbum.Accounts do
     Repo.get!(User, id)
     |> Repo.preload(:credential)
   end
+  def get_user(id) do
+    with {:ok, user} <- Repo.get(User, id),
+         result <-  Repo.preload(user, :credential) do
+      {:ok, result}
+    end
+  end
 
   @doc """
   Creates a user.
