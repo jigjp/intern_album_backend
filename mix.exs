@@ -42,7 +42,8 @@ defmodule InternAlbum.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:cors_plug, "~> 2.0"},
-      { :elixir_uuid, "~> 1.2" }
+      {:elixir_uuid, "~> 1.2" },
+      {:mogrify, "~> 0.7.3"}
     ]
   end
 

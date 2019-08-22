@@ -69,6 +69,12 @@ defmodule InternAlbum.Albums do
       filename <- "#{UUID.uuid4()}#{Path.extname(upload.filename)}",
       :ok <- File.cp(upload.path, "media/#{filename}") do
 
+      # 回転されている画像を修正する
+      Mogrify.open("media/#{filename}")
+      |> Mogrify.auto_orient()
+      |> IO.inspect
+      |> Mogrify.save(in_place: true)
+
       new_attrs = Map.put(attrs, "url", "/media/#{filename}")
 
       %Picture{}
