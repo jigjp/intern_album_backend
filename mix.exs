@@ -43,7 +43,10 @@ defmodule InternAlbum.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:cors_plug, "~> 2.0"},
       {:elixir_uuid, "~> 1.2" },
-      {:mogrify, "~> 0.7.3"}
+      {:mogrify, "~> 0.7.3"},
+      {:ex_aws, "~> 2.1"},
+      {:ex_aws_s3, "~> 2.0"},
+      {:hackney, "~> 1.9"},
     ]
   end
 
