@@ -81,7 +81,7 @@ defmodule InternAlbum.Albums do
       image = ExAws.S3.put_object(bucket_name, filename, image_binary)
       |> ExAws.request!
 
-      image_url = "https://#{bucket_name}.s3.amazonaws.com/#{bucket_name}/#{filename}"
+      image_url = "https://#{bucket_name}.s3.amazonaws.com/#{filename}"
 
       new_attrs = Map.put(attrs, "url", image_url)
 
