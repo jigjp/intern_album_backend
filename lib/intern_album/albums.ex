@@ -65,11 +65,25 @@ defmodule InternAlbum.Albums do
 
   """
   def create_picture(attrs \\ %{}) do
-    with {:ok, upload} <- map_fetch_atom_or_string(attrs, :image),
-      filename <- "#{UUID.uuid4()}#{Path.extname(upload.filename)}",
-      :ok <- File.cp(upload.path, "media/#{filename}") do
+    with {:ok, upload} <- map_fetch_atom_or_string(attrs, :image) do
 
-      new_attrs = Map.put(attrs, "url", "/media/#{filename}")
+      bucket_name = System.get_env("BUCKET_NAME")
+
+      # 回転されている画像を修正する
+      Mogrify.open(upload.path)
+      |> Mogrify.auto_orient()
+      |> Mogrify.save(in_place: true)
+
+      filename = "#{UUID.uuid4()}#{Path.extname(upload.filename)}"
+      {:ok, image_binary} =File.read(upload.path)
+
+      # S3にアップロード
+      image = ExAws.S3.put_object(bucket_name, filename, image_binary)
+      |> ExAws.request!
+
+      image_url = "https://#{bucket_name}.s3.amazonaws.com/#{bucket_name}/#{filename}"
+
+      new_attrs = Map.put(attrs, "url", image_url)
 
       %Picture{}
       |> Picture.changeset(new_attrs)
